@@ -6,14 +6,12 @@ from langchain_community.vectorstores import FAISS
 from langchain.docstore.document import Document
 import os
 
-# --- Configuration ---
 CLEANED_DATA_PATH = 'data/filtered_complaints.csv'
 VECTOR_STORE_PATH = 'vector_store'
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-CHUNK_SIZE = 400  # characters
-CHUNK_OVERLAP = 50 # characters
+CHUNK_SIZE = 400 
+CHUNK_OVERLAP = 50
 
-# Ensure the vector_store directory exists
 os.makedirs(VECTOR_STORE_PATH, exist_ok=True)
 
 print("Starting: Chunking, Embedding, and Vector Store Indexing...")
@@ -26,11 +24,10 @@ except FileNotFoundError:
     print(f"Error: {CLEANED_DATA_PATH} not found.")
     exit()
 
-# Prepare data for LangChain Document format
 documents = []
 for index, row in df.iterrows():
     narrative = str(row['Consumer complaint narrative'])
-    if narrative.strip(): # Only add if narrative is not empty after stripping
+    if narrative.strip():
         documents.append(
             Document(
                 page_content=narrative,
@@ -49,8 +46,8 @@ print(f"Applying RecursiveCharacterTextSplitter with chunk_size={CHUNK_SIZE}, ch
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=CHUNK_SIZE,
     chunk_overlap=CHUNK_OVERLAP,
-    length_function=len,  # Use character length
-    separators=["\n\n", "\n", " ", ""] # Prioritize splitting by paragraphs, then lines, then words, then characters
+    length_function=len, 
+    separators=["\n\n", "\n", " ", ""]
 )
 
 # Split documents into chunks
@@ -63,11 +60,9 @@ embeddings = SentenceTransformerEmbeddings(model_name=EMBEDDING_MODEL_NAME)
 
 # --- 4. Embedding and Indexing ---
 print("Creating FAISS vector store and generating embeddings...")
-# Create a FAISS index from the chunks and embeddings
 db = FAISS.from_documents(chunks, embeddings)
 print("FAISS vector store created.")
 
-# Save the vector store
 db.save_local(VECTOR_STORE_PATH)
 print(f"Vector store persisted to {VECTOR_STORE_PATH}/")
 
