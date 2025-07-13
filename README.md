@@ -54,6 +54,14 @@ credittrust_complaint_chatbot/
     ```
     *(Ensure your raw `complaints.csv` is in the `data/` directory or update the script path.)*
 
+# EDA Summary Report
+* The Exploratory Data Analysis (EDA) on the CFPB complaint dataset revealed critical insights into the structure and quality of the raw customer feedback. Initially, the dataset contained a large number of missing values across several columns, most notably in the 'Consumer complaint narrative' (over 6.6 million missing entries), 'Company public response', and 'Tags'. This underscores the necessity of a robust preprocessing phase to ensure data quality for the AI tool.
+
+* An analysis of product distribution showed a wide array of financial products. However, for CrediTrust Financial, the focus was narrowed to 'Credit card', 'Personal loan', 'Buy Now, Pay Later', 'Savings account', and 'Money transfers'. It's important to note that the raw CFPB data doesn't explicitly contain a "Buy Now, Pay Later" product category. To address this, an assumption was made that some existing categories might encompass BNPL, or that this category would be populated from CrediTrust's internal data in a real-world scenario. The distribution across the targeted products in your filtered dataset shows 'Money transfers' leading with over 97,000 complaints, followed by 'Credit card' and 'Personal loan'.
+
+* Further examination of the 'Consumer complaint narrative' revealed a significant number of complaints initially lacked narratives (over 6.6 million), which were subsequently removed. For the remaining narratives, the word count analysis showed a wide distribution, with a mean length of approximately 184 words. While the majority of narratives fall within a manageable length, the presence of very long narratives (up to 6236 words) indicates a need for effective text processing to handle varying levels of detail. The cleaning process, including lowercasing, removing boilerplate text, special characters, and redactions like 'XXXX', was successful in standardizing the narratives, as demonstrated by the sample outputs. This thorough cleaning is crucial for generating high-quality embeddings, which are foundational for the RAG model's ability to accurately retrieve and synthesize relevant information from complaints. The final filtered and cleaned dataset, comprising 263,187 records, is now well-prepared for the subsequent stages of building CrediTrust's complaint-answering chatbot.
+
+
 ### Task 2: Text Chunking, Embedding, and Vector Store Indexing
 
 * **Run the script:**
