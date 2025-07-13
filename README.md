@@ -39,7 +39,7 @@ credittrust_complaint_chatbot/
     ```bash
     pip install -r requirements.txt
     ```
-
+    
 ## How to Run
 
 ### Task 1: Exploratory Data Analysis and Data Preprocessing
@@ -53,3 +53,11 @@ credittrust_complaint_chatbot/
     python src/eda_preprocessing.py
     ```
     *(Ensure your raw `complaints.csv` is in the `data/` directory or update the script path.)*
+
+### Task 2: Text Chunking, Embedding, and Vector Store Indexing
+
+* **Run the script:**
+    ```bash
+    python src/chunk_embed_indexing.py
+    ```
+    *(This script will read `data/filtered_complaints.csv` and save the vector store to `vector_store/`.)*
