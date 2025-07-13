@@ -78,3 +78,13 @@ python src/rag_application.py
 > If you encounter ResourceExhausted errors, your Google Gemini API free-tier quota might be temporarily exceeded. Please wait and try again later, or consider upgrading your Google Cloud project.
 
 ---
+
+### Task 4: Creating an Interactive Chat Interface
+
+**Purpose:** To provide a user-friendly web interface for interacting with the RAG system, allowing non-technical users to ask questions and view evidence-backed answers with source traceability.
+
+Run the Gradio application:
+
+```bash
+python app.py
+```
