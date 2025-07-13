@@ -3,3 +3,6 @@ numpy
 seaborn
 matplotlib
 langchain_community
+langchain_google_genai
+google-generativeai
+gradio
