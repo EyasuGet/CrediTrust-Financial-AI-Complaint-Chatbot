@@ -12,7 +12,7 @@ This project aims to develop an internal AI tool for CrediTrust Financial to ana
 
 ## Project Structure
 
-
+```
 credittrust_complaint_chatbot/
 ├── data/
 ├── notebooks/
@@ -21,7 +21,7 @@ credittrust_complaint_chatbot/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
-
+```
 
 ## Setup and Installation
 
@@ -69,3 +69,21 @@ credittrust_complaint_chatbot/
     python src/chunk_embed_indexing.py
     ```
     *(This script will read `data/filtered_complaints.csv` and save the vector store to `vector_store/`.)*
+
+## Chunking Strategy
+* For processing the consumer complaint narratives, a RecursiveCharacterTextSplitter from the LangChain library was chosen. This splitter is particularly effective because it attempts to split text hierarchically using a list of separators (["\n\n", "\n", " ", ""] by default). This approach prioritizes keeping logical units of text (like paragraphs, then sentences) together, only breaking them down further if a chunk exceeds the specified size. This helps maintain the coherence and context of the complaint narratives, which is vital for accurate retrieval in a RAG system. **
+
+* After experimentation, the following parameters were selected:
+
+* chunk_size = 400 (characters): This size was chosen to ensure that each chunk is large enough to contain meaningful context from a complaint, but small enough to be efficiently processed by the embedding model and fit within its typical input token limits. While all-MiniLM-L6-v2 has an input limit of 128 tokens, a character-based chunk_size of 400 typically translates to approximately 80-100 words, which generally falls within the token limits after tokenization by the embedding model. This balance aims to prevent the dilution of meaning in excessively large chunks and avoid fragmentation of important details in very small chunks.
+
+* chunk_overlap = 50 (characters): A small overlap was introduced to preserve continuity and context across adjacent chunks. This helps mitigate the "lost in the middle" problem, where important information might be split between two chunks, making it harder for the retriever to find relevant information if a query spans across a chunk boundary. An overlap of 50 characters, roughly 10-15% of the chunk_size, provides a sufficient buffer without significantly increasing redundancy or computational load.
+
+## Embedding Model Choice
+* The sentence-transformers/all-MiniLM-L6-v2 model was selected as the embedding model for this project. This model is a popular choice for several reasons:
+
+* Efficiency and Speed: all-MiniLM-L6-v2 is a distilled model, meaning it's a smaller, faster version of larger Transformer models while retaining much of their performance. Its compact size (around 80MB) and high inference speed make it suitable for real-time applications and processing large volumes of data, which is essential for handling thousands of customer complaints per month.
+
+* Semantic Search Capability: It is specifically trained for semantic textual similarity tasks. This means it excels at generating embeddings where semantically similar sentences are mapped to closely located vectors in the embedding space. This characteristic is crucial for our RAG system, as it allows the vector store to effectively identify and retrieve complaint chunks that are semantically relevant to a user's query, even if the exact keywords are not present.
+
+* Good Performance for its Size: Despite its small size, it performs remarkably well on various semantic similarity benchmarks. This provides a good balance between accuracy and computational resources, making it a pragmatic choice for an internal AI tool where quick insights are prioritized. Its ability to map sentences and short paragraphs into a 384-dimensional dense vector space is sufficient for capturing the nuanced meaning of customer complaints.
